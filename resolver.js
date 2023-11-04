@@ -18,12 +18,13 @@ async function resolve(domainName) {
   // console.log(binaryToHex(query));
 
   // console.log(question.decodeDomainHex("03c9bb98367dfbf3ecca078f7ed00"));
-  console.log(question.decodeDomainHex("03646e7306676f6f676c6503636f6d00"));
+  console.log(question.encoded_domain);
+  console.log(question.decodeDomainHex(question.encoded_domain));
 }
 
-("0016 0100 0001 0000 0000 0000 03c9bb98367dfbf3ecca078f7ed00 0001 0001");
-("0016 0100 0001 0000 0000 0000 03646e7306676f6f676c6503636f6d00 0001 0001");
-("0016 0100 0001 0000 0000 0000 03646e7306676f6f676c6503636f6d00 0001 0001");
+// ("0016 0100 0001 0000 0000 0000 03c9bb98367dfbf3ecca078f7ed00 0001 0001");
+// ("0016 0100 0001 0000 0000 0000 03646e7306676f6f676c6503636f6d00 0001 0001");
+// ("0016 0100 0001 0000 0000 0000 03646e7306676f6f676c6503636f6d00 0001 0001");
 async function run() {
   const domainName = process.argv[2];
   const ip = await resolve(domainName);

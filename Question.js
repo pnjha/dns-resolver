@@ -1,5 +1,4 @@
 const _ = require("lodash");
-const { hexToBinary } = require("./common");
 
 class Question {
   constructor(options) {
@@ -11,37 +10,34 @@ class Question {
     const labels = this.domain.split(".");
     let encodedDomain = "";
     for (const label of labels) {
-      const labelLengthBinary = label.length.toString(16).padStart(2, "0");
-      let labelBinary = "";
+      const labelLengthHex = label.length.toString(16).padStart(2, "0");
+      let labelHex = "";
       for (let i = 0; i < label.length; i++) {
-        labelBinary += label.charCodeAt(i).toString(16).padStart(2, "0");
+        labelHex += label.charCodeAt(i).toString(16).padStart(2, "0");
       }
-      encodedDomain += labelLengthBinary + labelBinary;
+      encodedDomain += labelLengthHex + labelHex;
     }
     encodedDomain += (0).toString(16).padStart(2, "0");
     return encodedDomain;
   }
   decodeDomainHex(encodedDomainHex) {
-    const domainBin = hexToBinary(encodedDomainHex);
     let domain = "";
-    for (let i = 0; i < domainBin.length; ) {
-      const length = parseInt(domainBin.substring(i, i + 8), 2);
-      console.log(length);
-
-      const labelBin = domainBin.substring(i + 8, i + 8 + length * 8);
-      console.log(labelBin);
-      for (let j = 0; j < labelBin.length; j += 8) {
-        console.log(parseInt(labelBin.substring(j, j + 8), 2));
-        domain += String.fromCharCode(parseInt(labelBin.substring(j, j + 8), 2));
+    for (let i = 0; i < encodedDomainHex.length; ) {
+      const length = parseInt(encodedDomainHex.substring(i, i + 2), 16);
+      if (length === 0) {
+        break;
+      }
+      const labelHex = encodedDomainHex.substring(i + 2, i + 2 + length * 2);
+      for (let j = 0; j < labelHex.length; j += 2) {
+        domain += String.fromCharCode(parseInt(labelHex.substring(j, j + 2), 16));
       }
       domain += ".";
-      i += 8 + length * 8;
+      i += 2 + length * 2;
     }
     return domain;
   }
   get question_hex() {
-    const encodedDomain = this.encoded_domain;
-    return `${encodedDomain.toString(16)}${this.qtype.toString(16).padStart(4, "0")}${this.qclass
+    return `${this.encoded_domain}${this.qtype.toString(16).padStart(4, "0")}${this.qclass
       .toString(16)
       .padStart(4, "0")}`;
   }
