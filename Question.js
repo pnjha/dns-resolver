@@ -22,6 +22,7 @@ class Question {
   }
   decodeDomainHex(encodedDomainHex) {
     let domain = "";
+    let domainHexLength = 0;
     for (let i = 0; i < encodedDomainHex.length; ) {
       const length = parseInt(encodedDomainHex.substring(i, i + 2), 16);
       if (length === 0) {
@@ -33,8 +34,15 @@ class Question {
       }
       domain += ".";
       i += 2 + length * 2;
+      domainHexLength = i + 1;
     }
-    return domain;
+    return { domain, length: domainHexLength + 4 };
+  }
+  decodeQuestionHex(questionHex) {
+    const { domain, length } = this.decodeDomainHex(questionHex);
+    const qtype = questionHex.substring(length, length + 2);
+    const qclass = questionHex.substring(length + 2, length + 4);
+    return { domain, qtype, qclass, length: length + 4 };
   }
   get question_hex() {
     return `${this.encoded_domain}${this.qtype.toString(16).padStart(4, "0")}${this.qclass

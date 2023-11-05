@@ -112,6 +112,27 @@ class Header {
     header += this.arcount.toString(16).padStart(4, "0");
     return header;
   }
+  decodeHeaderFlags(flagHex) {
+    const flagBin = parseInt(flagHex, 16).toString(2);
+    const qr = flagBin.substring(0, 1);
+    const opcode = flagBin.substring(1, 5);
+    const aa = flagBin.substring(5, 6);
+    const tc = flagBin.substring(6, 7);
+    const rd = flagBin.substring(7, 8);
+    const ra = flagBin.substring(8, 9);
+    const z = flagBin.substring(9, 12);
+    const rcode = flagBin.substring(12, flagBin.length);
+    return { flags: { qr, opcode, aa, tc, rd, ra, z, rcode } };
+  }
+  decodeHeader(headerHex) {
+    const id = parseInt(headerHex.substring(0, 4), 16);
+    const { flags } = this.decodeHeaderFlags(headerHex.substring(4, 8));
+    const qdcount = headerHex.substring(8, 12).toString(16);
+    const ancount = headerHex.substring(12, 16);
+    const nscount = headerHex.substring(16, 20);
+    const arcount = headerHex.substring(20, 24);
+    return { header: { id, flags, qdcount, ancount, nscount, arcount }, length: 24 };
+  }
 }
 
 module.exports = Header;

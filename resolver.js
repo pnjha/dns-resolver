@@ -13,13 +13,19 @@ async function resolve(domainName) {
   const question = new Question({ domain: domainName });
   const questionHex = question.question_hex;
   const query = `${headerHex}${questionHex}`;
-  console.log(question.encoded_domain);
-  console.log(question.decodeDomainHex(question.encoded_domain));
   const server = new DnsServer();
-  const responseHex = await server.executeQuery(query);
-  console.log(responseHex);
+  // const responseHex = await server.executeQuery(query);
+  const responseHex =
+    "00168180000100020000000003646e7306676f6f676c6503636f6d0000010001c00c0001000100000131000408080808c00c0001000100000131000408080404";
+  // const responseHex =
+  //   "00168080000100020000000003646e7306676f6f676c6503636f6d0000010001c00c0001000100000214000408080808c00c0001000100000214000408080404";
+  console.log({ responseHex });
+  const { header: deocdedHeader, length: headerLength } = header.decodeHeader(responseHex);
+  console.log({ deocdedHeader, headerLength });
+  const decodedQuestionSection = question.decodeQuestionHex(responseHex.substring(headerLength, responseHex.length));
+  console.log({ decodedQuestionSection });
 }
-
+// 00160100000100000000000003646e7306676f6f676c6503636f6d0000010001
 async function run() {
   const domainName = process.argv[2];
   const ip = await resolve(domainName);
